@@ -1,4 +1,7 @@
 from django.db import models
+import os
+import uuid
+from django.utils.text import slugify
 
 class Kingdom(models.Model):
     name = models.CharField(max_length=100)
@@ -54,22 +57,32 @@ class Species(models.Model):
     genus = models.ForeignKey(Genus, on_delete=models.CASCADE)
     
     # Campos relacionados con las propiedades curativas
-    medicinal_properties = models.ManyToManyField(MedicinalProperty)
+    medicinal_properties = models.ManyToManyField(MedicinalProperty,null=True)
     
     # Campos informativos y descriptivos
-    general_information = models.TextField()
-    species_information = models.TextField()
-    morphological_characteristics = models.TextField()
-
-    # ... otros campos relacionados con la especie
+    general_information = models.TextField(null=True)
+    species_information = models.TextField(null=True)
+    morphological_characteristics = models.TextField(null=True)
+    slug = models.SlugField(unique=True, blank=True,null=True)
 
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.scientific_name)
+        super().save(*args, **kwargs)
+
+
+
+def species_image_path(instance, filename):
+    # Genera la ruta de la imagen basada en el nombre de la especie
+    unique_filename = f"{uuid.uuid4().hex}{os.path.splitext(filename)[1]}"
+    species_slug = slugify(instance.species.name)
+    return os.path.join('mushrooms', species_slug, unique_filename)
 
 class MushroomImage(models.Model):
     species = models.ForeignKey(Species, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='mushrooms/')
+    image = models.ImageField(upload_to=species_image_path)
 
     def __str__(self):
         return f"Image of {self.species.name}"
