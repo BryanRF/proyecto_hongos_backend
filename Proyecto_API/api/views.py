@@ -1,15 +1,16 @@
 import io
-import json
 from pathlib import Path
 from typing import Any
-import numpy as np
 from django.http import JsonResponse
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from .machine_learning.proccess import MushroomClassifier
 from .models import Species
-from django.shortcuts import get_object_or_404
+from .models import MushroomImage
+from django.core.files.base import ContentFile
+import base64
+
 class SpeciesView(View):
     def __init__(self):
         super().__init__()
@@ -54,48 +55,51 @@ class SpeciesView(View):
                 'slug': species.slug,
                 # Agrega más campos según sea necesario
             }
+            
             species_list.append(species_data)
         # Retorna la lista de especies como una respuesta JSON
         return JsonResponse({'species': species_list}, safe=False)
-    
+    def convertir_bytes(self,image_path):
+        try:
+            with open(image_path, 'rb') as image_file:
+                image_bytes = image_file.read()
+                return base64.b64encode(image_bytes).decode('utf-8')
+        except Exception as e:
+            # Manejar errores si la imagen no se puede leer
+            return None
+        
     def post(self, request):
         epochs = 10
         model_filename = "C:/xampp/htdocs/proyecto_hongos/Proyecto_API/api/machine_learning/entrenamiento/mushroom_classifier_model.h5"
-        
         # Verifica si ya existe un modelo entrenado
         if Path(model_filename).is_file():
             # Si existe, carga el modelo entrenado
             classifier = MushroomClassifier()
             self.model = classifier.load_model(model_filename)
-            
             # Inicializa train_generator si no lo está
             if self.train_generator is None:
                 self.train_generator, _ = classifier.load_data()  # Usamos _ para descartar validation_generator
         else:
             # Si no existe, crea una nueva instancia de MushroomClassifier
             classifier = MushroomClassifier()
-
             # Carga los datos y entrena el modelo
             train_generator, validation_generator = classifier.load_data()
             self.model = classifier.create_model(input_shape=(150, 150, 3), num_classes=3)
             classifier.train_model(self.model, train_generator, validation_generator, epochs)
-
             # Guarda el modelo entrenado
             classifier.save_model(self.model, model_filename)
-            
             # Asigna train_generator a la instancia para futuros usos
             self.train_generator = train_generator
-        
         # Continúa con la lógica para procesar la imagen y hacer la predicción
-        uploaded_file = request.FILES['image']
-        file_content = uploaded_file.read()
+        file_content = request.FILES['image'].read()
         image_io = io.BytesIO(file_content)
         predicted_class = classifier.predict_mushroom(self.model, image_io)
         class_names = list(self.train_generator.class_indices.keys())  # Usamos self.train_generator
         predicted_species_slug = class_names[predicted_class]
         species =Species.objects.filter(slug=predicted_species_slug)
-        print(predicted_species_slug)
         especie = species.first()
+        mushroom_image = MushroomImage.objects.filter(species=especie).order_by('?').first()
+        image_bytes = self.convertir_bytes(mushroom_image.image.path)
         if species.exists():
             # Ahora, puedes acceder a los datos de la especie
             species_data = {
@@ -111,7 +115,13 @@ class SpeciesView(View):
                 'species_information': especie.species_information,
                 'morphological_characteristics': especie.morphological_characteristics,
                 'medicinal_properties': [prop.name for prop in especie.medicinal_properties.all()],
+                'image_url': image_bytes
             }
         else:    
             return JsonResponse({'mensaje':'no se encontro ninguna especie con esas caracteristicas', 'data':predicted_species_slug})
         return JsonResponse(species_data, safe=False)
+
+
+
+
+
