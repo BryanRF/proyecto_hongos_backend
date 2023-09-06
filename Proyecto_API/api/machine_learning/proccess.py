@@ -11,7 +11,7 @@ class MushroomClassifier:
         
     def load_data(self, img_width=150, img_height=150, batch_size=32, validation_split=0.2):
         train_datagen = ImageDataGenerator(rescale=1.0/255, validation_split=validation_split)
-        data_dir="C:/xampp/htdocs/proyecto_hongos/Proyecto_API/mushrooms"
+        data_dir="C:/xampp/htdocs/proyecto_hongos/Proyecto_API/media/mushrooms"
         train_generator = train_datagen.flow_from_directory(
             data_dir,
             target_size=(img_width, img_height),
