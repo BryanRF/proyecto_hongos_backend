@@ -1,4 +1,4 @@
-# Clasificador de Especies de Hongos con Aprendizaje Automático
+# Clasificador de Especies de Hongos con Aprendizaje Automático Backend
 
 ![Proyecto de clasificación de hongos](https://github.com/BryanRF/proyecto_hongos/blob/main/Proyecto_API/Captura%20de%20pantalla%202023-09-06%20140750.png)
 
@@ -40,7 +40,7 @@ Una vez que el servidor esté en funcionamiento, puede acceder a la aplicación 
 
 ¡Disfruta explorando las especies de hongos y probando el clasificador de imágenes de hongos!
 
-## Capturas de Pantalla
+## Capturas de Pantalla (frontend con Laravel)
 
 ![Captura de Pantalla 1](https://github.com/BryanRF/proyecto_hongos/blob/main/Proyecto_API/cap.png)
 *Prediccion de la especie de hongo.*
