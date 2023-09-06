@@ -58,7 +58,6 @@ class Species(models.Model):
     
     # Campos relacionados con las propiedades curativas
     medicinal_properties = models.ManyToManyField(MedicinalProperty,null=True)
-    
     # Campos informativos y descriptivos
     general_information = models.TextField(null=True)
     species_information = models.TextField(null=True)
@@ -71,7 +70,6 @@ class Species(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.scientific_name)
         super().save(*args, **kwargs)
-
 
 
 def species_image_path(instance, filename):
