@@ -6,7 +6,7 @@ Este es un proyecto de clasificación de especies de hongos desarrollado utiliza
 
 ## Descripción del Proyecto
 
-El proyecto "proyecto_hongos" es una aplicación web desarrollada con Django que permite cargar imágenes de hongos y utilizar un modelo de aprendizaje automático previamente entrenado para predecir la especie de hongo en la imagen. También proporciona información detallada sobre las especies de hongos almacenadas en la base de datos.
+El proyecto "Proyecto de clasificación de hongos" es una aplicación web desarrollada con Django que permite cargar imágenes de hongos y utilizar un modelo de aprendizaje automático previamente entrenado para predecir la especie de hongo en la imagen. También proporciona información detallada sobre las especies de hongos almacenadas en la base de datos.
 
 ## Instrucciones de Ejecución
 
