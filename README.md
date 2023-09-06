@@ -1,6 +1,6 @@
 # Clasificador de Especies de Hongos con Aprendizaje Automático
 
-![Proyecto de clasificación de hongos](\Proyecto_API\Captura de pantalla 2023-09-06 140750.png)
+![Proyecto de clasificación de hongos](https://github.com/BryanRF/proyecto_hongos/blob/main/Proyecto_API/Captura%20de%20pantalla%202023-09-06%20140750.png)
 
 Este es un proyecto de clasificación de especies de hongos desarrollado utilizando Python y Django. El proyecto utiliza aprendizaje automático para detectar la especie a la que pertenece un hongo en función de una imagen proporcionada.
 
@@ -42,7 +42,7 @@ Una vez que el servidor esté en funcionamiento, puede acceder a la aplicación 
 
 ## Capturas de Pantalla
 
-![Captura de Pantalla 1](\Proyecto_API\cap.png)
+![Captura de Pantalla 1](https://github.com/BryanRF/proyecto_hongos/blob/main/Proyecto_API/cap.png)
 *Prediccion de la especie de hongo.*
 
 
