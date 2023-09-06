@@ -30,6 +30,7 @@ class SpeciesView(View):
         # Guarda el modelo entrenado
         classifier.save_model(self.model, model_filename)
         return JsonResponse({'mensaje':'Modelo entrenado correctamente'}, safe=False)
+    
     def get(self, request):
         # Consulta todas las especies en la base de datos
         all_species = Species.objects.all()
