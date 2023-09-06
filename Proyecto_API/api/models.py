@@ -76,7 +76,7 @@ def species_image_path(instance, filename):
     # Genera la ruta de la imagen basada en el nombre de la especie
     unique_filename = f"{uuid.uuid4().hex}{os.path.splitext(filename)[1]}"
     species_slug = slugify(instance.species.name)
-    return os.path.join('mushrooms', species_slug, unique_filename)
+    return os.path.join('media', species_slug, unique_filename)
 
 class MushroomImage(models.Model):
     species = models.ForeignKey(Species, on_delete=models.CASCADE)
