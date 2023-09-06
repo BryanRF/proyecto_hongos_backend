@@ -103,6 +103,7 @@ class SpeciesView(View):
         if species.exists():
             # Ahora, puedes acceder a los datos de la especie
             species_data = {
+                'estado':True,
                 'name': especie.name,
                 'scientific_name': especie.scientific_name,
                 'kingdom': especie.kingdom.name,
@@ -118,8 +119,8 @@ class SpeciesView(View):
                 'image_url': image_bytes
             }
         else:    
-            return JsonResponse({'mensaje':'no se encontro ninguna especie con esas caracteristicas', 'data':predicted_species_slug})
-        return JsonResponse(species_data, safe=False)
+            return JsonResponse({'estado':False,'mensaje':'no se encontro ninguna especie con esas caracteristicas', 'data':predicted_species_slug})
+        return JsonResponse(species_data, safe=False,)
 
 
 
