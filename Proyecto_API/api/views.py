@@ -9,7 +9,9 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from .machine_learning.proccess import MushroomClassifier
 from .models import Species
-from django.shortcuts import get_object_or_404
+from .models import MushroomImage
+from django.conf import settings
+from django.templatetags.static import static
 class SpeciesView(View):
     def __init__(self):
         super().__init__()
@@ -95,6 +97,7 @@ class SpeciesView(View):
         species =Species.objects.filter(slug=predicted_species_slug)
         print(predicted_species_slug)
         especie = species.first()
+        image_url = self.construct_species_image_url(especie.slug)
         if species.exists():
             # Ahora, puedes acceder a los datos de la especie
             species_data = {
@@ -110,7 +113,21 @@ class SpeciesView(View):
                 'species_information': especie.species_information,
                 'morphological_characteristics': especie.morphological_characteristics,
                 'medicinal_properties': [prop.name for prop in especie.medicinal_properties.all()],
+                'image_url': image_url,  
             }
         else:    
             return JsonResponse({'mensaje':'no se encontro ninguna especie con esas caracteristicas', 'data':predicted_species_slug})
         return JsonResponse(species_data, safe=False)
+    def construct_species_image_url(self, species_slug):
+        # Construct the image URL based on the species slug
+        image_path = f'{species_slug}/'  # Remove the 'mushrooms' prefix
+        image_file = 'your_default_image.png'  # Provide a default image if needed
+        try:
+            image = MushroomImage.objects.filter(species__slug=species_slug).first()
+            if image:
+                image_file = image.image.url
+        except MushroomImage.DoesNotExist:
+            pass
+
+        return self.request.build_absolute_uri(static(image_path + image_file))
+
